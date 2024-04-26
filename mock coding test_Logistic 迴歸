@@ -1,0 +1,54 @@
+from sklearn import linear_model, preprocessing
+import numpy as np
+import pandas as pd
+import os
+"""
+ChatGPT面試任務描述：
+我們有一個包含學生的數據集，每個學生有兩個特徵：考試1的成績和考試2的成績。我們需要訓練一個簡單的二元分類器，根據這兩個考試的成績來預測學生是否被大學錄取。我們提供給你的是一個以CSV格式存儲的數據集：students.csv。
+
+任務要求：
+使用Python及其相關庫（如NumPy、Pandas、scikit-learn等）讀取並處理數據集。
+使用適當的機器學習算法（如邏輯回歸、決策樹等）訓練模型。
+使用訓練好的模型對測試集進行預測。
+評估模型的性能並輸出準確率。
+注意事項：
+請確保你的代碼具有良好的可讀性和註釋，以便我們理解你的思路。
+測試集和訓練集的分割比例可以自行設定。
+你可以自由選擇機器學習算法和性能評估指標。
+"""
+
+
+
+# 1. 讀取數據集，將URL作為參數
+def load_data(url):
+    data_train = pd.read_csv(url)
+    return data_train
+
+# 2. 建立訓練集，給特徵命名
+def create_training_set(data_train):
+    train_X = pd.DataFrame({'Score1':data_train['score1'],'Score2':data_train['score2'],})
+    return train_X, data_train['Acceptance']
+
+# 3. 模型訓練進行預處理
+def train_model(train_X,train_y):
+    train_X = preprocessing.normalize(train_X)
+    model = linear_model.LogisticRegression()
+    model.fit(train_X,train_y)
+    return model
+
+# 4.  印出係數和截距，加入標籤
+def print_coefficients(model):
+    print('Coefficients = ', model.coef_)
+    print('Intercept = ',model.intercept_)
+
+def main():
+    url = 'student.csv'
+
+    data_train = load_data(url)
+    train_X,train_y = create_training_set(data_train)
+    model = train_model(train_X,train_y)
+    print_coefficients(model)
+
+
+if __name__=='__main__':
+    main()
